@@ -31,7 +31,7 @@ def to_dict(doc: SPP_document) -> dict:
         'text': doc.text,
         'web_link': doc.web_link,
         'local_link': doc.local_link,
-        'other_data': doc.other_data.get('category') if doc.other_data.get('category') else '',
+        'other_data': doc.other_data if doc.other_data else '',
         'pub_date': str(doc.pub_date.timestamp()) if doc.pub_date else '',
         'load_date': str(doc.load_date.timestamp()) if doc.load_date else '',
     }
@@ -41,7 +41,7 @@ urls = ['https://www.iso.org/ics/03.060/x/',
         'https://www.iso.org/ics/35.240.40/x/',
         'https://www.iso.org/ics/35.240.15/x/',
         'https://www.iso.org/ics/35.020/x/']
-parser = ISO(driver(), max_count_documents=50, urls=urls)
+parser = ISO(driver(), max_count_documents=5, urls=urls)
 docs: list[SPP_document] = parser.content()
 
 try:

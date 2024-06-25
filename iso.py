@@ -79,9 +79,10 @@ class ISO:
         for url in self.URLS:
             self.driver.get(url)
             self.wait.until(EC.presence_of_element_located((By.TAG_NAME, 'tbody')))
+            category = self.driver.find_element(By.CLASS_NAME, 'heading-condensed').text.replace('\n', ' ')
             docs = self.driver.find_elements(By.XPATH, "//tbody/tr[contains(@ng-show, 'pChecked')]")
             for doc in docs:
-                title = doc.find_element(By.CLASS_NAME, 'clearfix').text
+                title = doc.find_element(By.CLASS_NAME, 'clearfix').text.replace('\n', ' ')
                 standard_link = (doc.find_element(By.CLASS_NAME, 'clearfix')
                                  .find_element(By.TAG_NAME, 'a').get_attribute('href'))
                 stage_short = doc.find_element(By.XPATH, ".//td[contains(@data-title, 'Stage')]").text
@@ -97,18 +98,18 @@ class ISO:
 
                 heading = self.driver.find_element(By.XPATH, "//nav[contains(@class, 'heading-condensed')]")
 
-                doc_ref = heading.find_element(By.TAG_NAME, 'h1').text
-                topic = heading.find_element(By.TAG_NAME, 'h2').text
+                # doc_ref = heading.find_element(By.TAG_NAME, 'h1').text
+                # topic = heading.find_element(By.TAG_NAME, 'h2').text
 
-                try:
-                    subtopic = heading.find_element(By.TAG_NAME, 'h3').text
-                except:
-                    subtopic = None
+                # try:
+                #     subtopic = heading.find_element(By.TAG_NAME, 'h3').text
+                # except:
+                #     subtopic = None
 
-                try:
-                    part = heading.find_element(By.TAG_NAME, 'h4').text
-                except:
-                    part = None
+                # try:
+                #     part = heading.find_element(By.TAG_NAME, 'h4').text
+                # except:
+                #     part = None
 
                 try:
                     abstract = self.driver.find_element(By.XPATH, "//div[contains(@itemprop,'description')]").text
@@ -121,9 +122,10 @@ class ISO:
                     status = None
 
                 pub_date = dateparser.parse(self.driver.find_element(
-                                                        By.XPATH, "//div[@id = 'publicationDate']/span").text)
+                    By.XPATH, "//div[@id = 'publicationDate']/span").text)
 
-                web_link = self.driver.find_element(By.XPATH, "//a[contains(text(),'Read sample')]").get_attribute('href')
+                web_link = self.driver.find_element(By.XPATH, "//a[contains(text(),'Read sample')]").get_attribute(
+                    'href')
 
                 self.driver.execute_script("window.open('');")
                 self.driver.switch_to.window(self.driver.window_handles[2])
@@ -133,14 +135,18 @@ class ISO:
 
                 text_content = self.driver.find_element(By.XPATH, "//div[contains(@class, 'sts-standard')]").text
 
-                other_data = {'doc_ref': doc_ref,
-                              'topic': topic,
-                              'subtopic': subtopic,
-                              'part': part,
-                              'status': status,
-                              'stage': stage_short,
-                              'tech_committee': tech_committee_short,
-                              'standard_page': standard_link}
+                other_data = {
+                    # 'doc_ref': doc_ref,
+                    # 'topic': topic,
+                    # 'subtopic': subtopic,
+                    # 'part': part,
+                    'category' : category,
+                    'category_link' : url,
+                    'status': status,
+                    'stage': stage_short,
+                    'tech_committee': tech_committee_short,
+                    'standard_page': standard_link
+                }
 
                 doc = SPP_document(
                     doc_id=None,
